@@ -1,9 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const ejs = require('ejs')
 const mongoose = require('mongoose')
 const encrypt = require('mongoose-encryption')
-mongoose.connect('mongodb://localhost:27017/userDB',{useNewUrlParser:true,useUnifiedTopology:true})
+mongoose.connect(process.env.DB_HOST,{useNewUrlParser:true,useUnifiedTopology:true})
 const app = express()
 
 app.use(express.static("public"))
@@ -16,8 +17,8 @@ const userSchema = new mongoose.Schema({
     password:String
 })
 
-const secretKey = "BIGSTRINGEWEWDAWDAWIDAWDIJAWDOAWKJDOAWDKAW"
-userSchema.plugin(encrypt,{secret:secretKey,encryptedFields:['password']})
+
+userSchema.plugin(encrypt,{secret:process.env.SECRET,encryptedFields:['password']})
 const User = new mongoose.model("user",userSchema)
 app.get('/',function(req,res){
     res.render('home')
